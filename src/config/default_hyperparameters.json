@@ -1,0 +1,13 @@
+{
+  "history_forecast_ratio": 10,
+  "lags_forecast_ratio": 3,
+  "lr": 1e-4,
+  "hidden_dimensions": [20, 20],
+  "context_length": null,
+  "batch_norm": true,
+  "early_stopping": true,
+  "early_stopping_patience": 20,
+  "min_delta": 0.001,
+  "trainer_kwargs": {"max_epochs": 500, "accelerator": "gpu"},
+  "use_exogenous": true
+}
