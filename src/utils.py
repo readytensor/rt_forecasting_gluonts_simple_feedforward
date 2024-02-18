@@ -201,7 +201,8 @@ def make_serializable(obj: Any) -> Union[int, float, List[Union[int, float]], An
 
 
 def get_peak_memory_usage():
-    peak_memory = torch.cuda.max_memory_allocated(0)
+    current_device = torch.cuda.current_device()
+    peak_memory = torch.cuda.max_memory_allocated(current_device)
     return peak_memory / 1e6
 
 
@@ -224,9 +225,13 @@ class TimeAndMemoryTracker(object):
         _, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
 
-        cuda_peak = get_peak_memory_usage()
+        if torch.cuda.is_available():
+            cuda_peak = get_peak_memory_usage()
+
         elapsed_time = self.end_time - self.start_time
 
         self.logger.info(f"Execution time: {elapsed_time:.2f} seconds")
         self.logger.info(f"Memory allocated (peak): {peak / 1024**2:.2f} MB")
-        self.logger.info(f"CUDA Memory allocated (peak): {cuda_peak}")
+
+        if torch.cuda.is_available():
+            self.logger.info(f"CUDA Memory allocated (peak): {cuda_peak} MB")
